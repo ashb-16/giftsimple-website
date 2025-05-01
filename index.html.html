@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Birthday Gift with Lid Confetti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #111;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    h2 {
+      margin-bottom: 40px;
+      font-size: 20px;
+      color: gold;
+      text-align: center;
+    }
+
+    .gift-box {
+      width: 200px;
+      height: 200px;
+      background-color: #000;
+      position: relative;
+      cursor: pointer;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .ribbon-vertical,
+    .ribbon-horizontal {
+      position: absolute;
+      background-color: gold;
+    }
+
+    .ribbon-vertical {
+      width: 24px;
+      height: 200px;
+      left: 88px;
+    }
+
+    .ribbon-horizontal {
+      width: 200px;
+      height: 24px;
+      top: 88px;
+    }
+
+    .lid {
+      position: absolute;
+      width: 200px;
+      height: 50px;
+      background-color: #000;
+      top: -50px;
+      border-radius: 15px 15px 0 0;
+      z-index: 2;
+      transition: transform 0.6s ease;
+      transform-origin: bottom center;
+    }
+
+    .gift-box.open .lid {
+      transform: rotateX(70deg) translateY(-20px);
+    }
+
+    .message {
+      display: none;
+      font-size: 24px;
+      color: gold;
+      margin-top: 40px;
+      animation: fadeIn 1s ease-in-out;
+      text-align: center;
+      padding: 0 20px;
+    }
+
+    .show-message {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: gold;
+      border-radius: 2px;
+      animation: confetti-burst 2s ease-out forwards;
+      opacity: 1;
+      z-index: 1;
+    }
+
+    @keyframes confetti-burst {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--x), var(--y)) rotate(720deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h2>Click the gift to open!</h2>
+
+<div class="gift-box" onclick="openGift()" id="gift">
+  <div class="lid" id="lid"></div>
+  <div class="ribbon-vertical"></div>
+  <div class="ribbon-horizontal"></div>
+</div>
+
+<div class="message" id="giftMessage">Wish you a happiest birthday!</div>
+
+<script>
+  function openGift() {
+    const gift = document.getElementById('gift');
+    const message = document.getElementById('giftMessage');
+    const lid = document.getElementById('lid');
+
+    gift.classList.add('open');
+    message.classList.add('show-message');
+
+    launchConfettiFromLid(lid);
+  }
+
+  function launchConfettiFromLid(lidElement) {
+    const rect = lidElement.getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2;
+
+    const colors = ['#FFD700', '#FFC107', '#FFEB3B', '#FFF176'];
+
+    for (let i = 0; i < 80; i++) {
+      const confetti = document.createElement('div');
+      confetti.classList.add('confetti');
+
+      const angle = Math.random() * 2 * Math.PI;
+      const distance = Math.random() * 200 + 50;
+      const x = Math.cos(angle) * distance + 'px';
+      const y = Math.sin(angle) * distance + 'px';
+
+      confetti.style.left = startX + 'px';
+      confetti.style.top = startY + 'px';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.setProperty('--x', x);
+      confetti.style.setProperty('--y', y);
+      confetti.style.width = confetti.style.height = (Math.random() * 8 + 4) + 'px';
+
+      document.body.appendChild(confetti);
+      setTimeout(() => confetti.remove(), 2000);
+    }
+  }
+</script>
+
+</body>
+</html>
